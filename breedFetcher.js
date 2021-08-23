@@ -1,30 +1,31 @@
 const request = require('request');
 
-const breed = process.argv.slice(2)[0];
-
-const catDescriptionFinder = function(breedName) {
+const fetchBreedDescription = function(breedName, callback) {
 
   request(`https://api.thecatapi.com/v1/breeds/search?q=${breedName}`, (error, response, body) => {
     const data = JSON.parse(body);
   
     if (error !== null) { // print error if not null
-      console.log(`error: ${error}`);
+      callback(`error: ${error}`, null); // error/null for desc
       return;
     }
+    // console.log(response);
 
-    if (response.statuscode !== 200) { // print status code if not successful
-      console.log(`statusCode: ${response}, ${response.statusCode}`);
+    if (response.statusCode !== 200) { // print status code if not successful
+      callback(`statusCode: ${response}, ${response.statusCode}`, null);
+      return;
     }
 
     if (data[0] === undefined) { // cannot locate breed
-      console.log(`Finder cannot locate '${breedName}' in our database`);
+      callback(`Finder cannot locate '${breedName}' in our database`, null);
       return;
     }
 
-    console.log(data[0].description); // log object.description
+    callback(null, data[0].description); 
+    // if error is null, log object.description
   });
 };
 
-console.log(catDescriptionFinder(breed));
+// console.log(fetchBreedDescription(breed));
 
-module.exports = { catDescriptionFinder };
+module.exports = { fetchBreedDescription };
