@@ -16,7 +16,7 @@ const fetchBreedDescription = function(breedName, callback) {
       return;
     }
 
-    if (data[0] === undefined) { // cannot locate breed
+    if (!data[0]) { // cannot locate breed
       callback(`Finder cannot locate '${breedName}' in our database`, null);
       return;
     }
